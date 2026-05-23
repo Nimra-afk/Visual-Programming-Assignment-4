@@ -1,0 +1,58 @@
+﻿@page "/application-4"
+@rendermode InteractiveServer
+
+<PageTitle>Application 4: Hybrid Counter</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-warning text-dark text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-bold">Application 4: Advanced Counter</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+
+                    <div class="mb-4 py-3 bg-light rounded-3 border">
+                        <h6 class="text-uppercase text-secondary fw-semibold small mb-1">Current Count Display</h6>
+                        <h1 class="display-3 fw-bold text-dark mb-0">@currentCount</h1>
+                    </div>
+
+                    <div class="d-grid mb-4">
+                        <button class="btn btn-warning btn-lg fw-bold shadow-sm py-3 rounded-3" @onclick="IncrementCounter">
+                            <i class="bi bi-plus-circle-fill me-2"></i>Click to Increment
+                        </button>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="text-start">
+                        <label for="manualCountInput" class="form-label fw-bold text-secondary small text-uppercase">
+                            Manually Adjust Count Value:
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text border-2 bg-white text-muted">#</span>
+                            <input type="number"
+                                   id="manualCountInput"
+                                   class="form-control border-2"
+                                   @bind-value="currentCount"
+                                   @bind-value:event="oninput"
+                                   placeholder="Type any whole number..." />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    // Shared backing state integer field property
+    private int currentCount = 0;
+
+    // Handles logic execution routine on click listener dispatch actions
+    private void IncrementCounter()
+    {
+        currentCount++;
+    }
+}
