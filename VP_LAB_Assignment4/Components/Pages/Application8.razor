@@ -1,0 +1,150 @@
+﻿@page "/application-8"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.Web
+@inject IDbContextFactory<VP_LAB_Assignment4.Data.AppDbContext> DbFactory
+
+<PageTitle>Application 8: Database Bound To-Do</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-dark text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold">Database Persistence To-Do List</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="input-group mb-3">
+                        <input type="text"
+                               class="form-control border-2 rounded-start-3"
+                               placeholder="Enter a persistent task..."
+                               @bind-value="newTaskTitle"
+                               @onkeyup="HandleKeyUp" />
+                        <button class="btn btn-dark fw-bold px-4 rounded-end-3" @onclick="AddTaskAsync">
+                            Add Task
+                        </button>
+                    </div>
+
+                    @if (tasks == null)
+                    {
+                        <p class="text-center text-muted fst-italic">Querying database store logs...</p>
+                    }
+                    else if (tasks.Count > 0)
+                    {
+                        <div class="d-flex justify-content-end mb-3">
+                            <button class="btn btn-sm btn-outline-danger rounded-3" @onclick="ClearAllTasksAsync">
+                                Clear All From Database
+                            </button>
+                        </div>
+                    }
+
+                    <div class="border-top my-3"></div>
+
+                    @if (tasks != null && tasks.Count == 0)
+                    {
+                        <div class="text-center py-4 bg-light rounded-3 border border-dashed text-muted">
+                            <p class="mb-0 fst-italic small">No items recorded in database tables.</p>
+                        </div>
+                    }
+                    else if (tasks != null)
+                    {
+                        <ul class="list-group list-group-flush rounded-3 border">
+                            @foreach (var task in tasks)
+                            {
+                                <li class="list-group-item d-flex align-items-center justify-content-between p-3 bg-white">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="checkbox"
+                                               class="form-check-input border-2"
+                                               checked="@task.IsCompleted"
+                                               @onchange="(e) => ToggleCompletionAsync(task)" />
+                                        <span class="@(task.IsCompleted ? "text-decoration-line-through text-muted" : "text-dark")">
+                                            @task.Title
+                                        </span>
+                                    </div>
+                                    <button class="btn btn-sm btn-link text-danger p-0 text-decoration-none"
+                                            @onclick="() => RemoveTaskAsync(task)">
+                                        Delete
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                        <div class="mt-2 text-end">
+                            <small class="text-muted fw-semibold">SQL Record Row Count: @tasks.Count</small>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string newTaskTitle = string.Empty;
+    private List<VP_LAB_Assignment4.Models.TodoTask>? tasks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTasksFromDatabaseAsync();
+    }
+
+    private async Task LoadTasksFromDatabaseAsync()
+    {
+        using var context = await DbFactory.CreateDbContextAsync();
+        tasks = await context.TodoTasks.ToListAsync();
+    }
+
+    private async Task AddTaskAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(newTaskTitle))
+        {
+            using var context = await DbFactory.CreateDbContextAsync();
+            var task = new VP_LAB_Assignment4.Models.TodoTask
+            {
+                Title = newTaskTitle.Trim(),
+                IsCompleted = false
+            };
+
+            context.TodoTasks.Add(task);
+            await context.SaveChangesAsync();
+
+            newTaskTitle = string.Empty;
+            await LoadTasksFromDatabaseAsync();
+        }
+    }
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await AddTaskAsync();
+        }
+    }
+
+    private async Task ToggleCompletionAsync(VP_LAB_Assignment4.Models.TodoTask task)
+    {
+        using var context = await DbFactory.CreateDbContextAsync();
+        context.TodoTasks.Attach(task);
+        task.IsCompleted = !task.IsCompleted;
+        await context.SaveChangesAsync();
+        await LoadTasksFromDatabaseAsync();
+    }
+
+    private async Task RemoveTaskAsync(VP_LAB_Assignment4.Models.TodoTask task)
+    {
+        using var context = await DbFactory.CreateDbContextAsync();
+        context.TodoTasks.Remove(task);
+        await context.SaveChangesAsync();
+        await LoadTasksFromDatabaseAsync();
+    }
+
+    private async Task ClearAllTasksAsync()
+    {
+        using var context = await DbFactory.CreateDbContextAsync();
+        var allTasks = await context.TodoTasks.ToListAsync();
+        context.TodoTasks.RemoveRange(allTasks);
+        await context.SaveChangesAsync();
+        await LoadTasksFromDatabaseAsync();
+    }
+}
