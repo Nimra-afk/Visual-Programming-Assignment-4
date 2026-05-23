@@ -1,0 +1,79 @@
+﻿@page "/application-2"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Application 2: Form Validation</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-success text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold">User Registration Form</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <EditForm Model="@registrationModel" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary small">First Name</label>
+                            <InputText class="form-control border-2 rounded-3" @bind-Value="registrationModel.FirstName" placeholder="Enter first name" />
+                            <ValidationMessage For="@(() => registrationModel.FirstName)" class="text-danger small mt-1" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary small">Last Name</label>
+                            <InputText class="form-control border-2 rounded-3" @bind-Value="registrationModel.LastName" placeholder="Enter last name" />
+                            <ValidationMessage For="@(() => registrationModel.LastName)" class="text-danger small mt-1" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary small">Email Address</label>
+                            <InputText type="email" class="form-control border-2 rounded-3" @bind-Value="registrationModel.Email" placeholder="name@example.com" />
+                            <ValidationMessage For="@(() => registrationModel.Email)" class="text-danger small mt-1" />
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 btn-lg rounded-3 shadow-sm">
+                            Submit Registration
+                        </button>
+                    </EditForm>
+
+                    @if (showSuccessMessage)
+                    {
+                        <div class="alert alert-success mt-4 border-0 rounded-3 shadow-sm p-3 text-center animate-fade-in animate-duration-3">
+                            <h5 class="fw-bold mb-1">🎉 Submission Successful!</h5>
+                            <p class="mb-0 small text-secondary">Account registered successfully for @registrationModel.FirstName @registrationModel.LastName.</p>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    // Instantiate our custom form data model matching your instructions
+    private UserModel registrationModel = new();
+    private bool showSuccessMessage = false;
+
+    private void HandleValidSubmit()
+    {
+        showSuccessMessage = true;
+    }
+
+    // Explicit validation rules model structure nested cleanly below
+    public class UserModel
+    {
+        [Required(ErrorMessage = "First name is explicitly required.")]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Last name is explicitly required.")]
+        public string LastName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email address is required.")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email format (e.g., name@example.com).")]
+        public string Email { get; set; } = string.Empty;
+    }
+}
