@@ -4,7 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
+
     .AddInteractiveServerComponents();
+builder.Services.AddSingleton<VP_LAB_Assignment4.Services.AuthenticationStateService>();
 
 var app = builder.Build();
 

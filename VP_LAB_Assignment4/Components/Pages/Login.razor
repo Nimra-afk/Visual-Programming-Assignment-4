@@ -1,0 +1,54 @@
+﻿@page "/login"
+@rendermode InteractiveServer
+@inject VP_LAB_Assignment4.Services.AuthenticationStateService AuthService
+@implements IDisposable
+
+<PageTitle>Application 5: Login Gate</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-dark text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold">User Authentication Center</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+
+                    <p class="text-muted mb-4">Click the button below to mutate the shared singleton app context state system.</p>
+
+                    @if (!AuthService.IsAuthenticated)
+                    {
+                        <div class="alert alert-warning border-0 rounded-3 mb-4">
+                            🔒 System Status: <strong>Logged Out</strong>
+                        </div>
+                        <button class="btn btn-primary btn-lg w-100 rounded-3 shadow-sm" @onclick="AuthService.LogIn">
+                            Secure Log In
+                        </button>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success border-0 rounded-3 mb-4">
+                            🔓 System Status: <strong>Authorized Session</strong>
+                        </div>
+                        <button class="btn btn-danger btn-lg w-100 rounded-3 shadow-sm" @onclick="AuthService.LogOut">
+                            Terminate Session (Log Out)
+                        </button>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        AuthService.OnStateChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AuthService.OnStateChanged -= StateHasChanged;
+    }
+}

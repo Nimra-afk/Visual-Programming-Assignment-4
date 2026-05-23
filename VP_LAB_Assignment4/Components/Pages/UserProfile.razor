@@ -1,0 +1,55 @@
+﻿@page "/user-profile"
+@rendermode InteractiveServer
+@inject VP_LAB_Assignment4.Services.AuthenticationStateService AuthService
+@implements IDisposable
+
+<PageTitle>Application 5: Profile Viewer</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-secondary text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold">Secure User Dashboard</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+
+                    @if (AuthService.IsAuthenticated)
+                    {
+                        <div class="py-3">
+                            <div class="mb-3 text-success">
+                                <i class="bi bi-person-check-fill display-1"></i>
+                            </div>
+                            <h2 class="fw-bold text-success">Welcome Back, Authorized User!</h2>
+                            <p class="text-secondary mt-2">Your identity has been successfully verified via the shared Singleton state manager service wrapper interface.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="py-3">
+                            <div class="mb-3 text-danger">
+                                <i class="bi bi-shield-lock-fill display-1"></i>
+                            </div>
+                            <h3 class="fw-bold text-danger">Access Explicitly Denied</h3>
+                            <p class="text-muted mt-2 mb-4">Please navigate back to the authentication portal dashboard and log into a verified credential stream profile sequence.</p>
+                            <a href="/login" class="btn btn-outline-danger px-4 rounded-3">Go to Login Portal</a>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        AuthService.OnStateChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AuthService.OnStateChanged -= StateHasChanged;
+    }
+}
