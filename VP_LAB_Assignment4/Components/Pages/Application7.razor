@@ -1,0 +1,78 @@
+﻿
+
+@page "/application-7"
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+
+<PageTitle>Application 7: Theme Persistence</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-secondary text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold">Dynamic Theme Storage Portal</h4>
+                </div>
+                <div class="card-body p-5 text-center">
+
+                    <button class="btn @(isDarkMode ? "btn-light text-dark" : "btn-dark text-light") btn-lg px-5 py-3 rounded-3 shadow-sm mb-0 fw-bold" 
+                            @onclick="ToggleTheme">
+                        @if (isDarkMode)
+                        {
+                            <span>🌞 Switch to Light Mode</span>
+                        }
+                        else
+                        {
+                            <span>🌙 Switch to Dark Mode</span>
+                        }
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool isDarkMode = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var cachedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "app-current-theme");
+            
+            if (cachedTheme == "dark")
+            {
+                isDarkMode = true;
+                await JS.InvokeVoidAsync("document.body.classList.add", "dark-theme");
+                await JS.InvokeVoidAsync("document.body.classList.remove", "light-theme");
+                StateHasChanged();
+            }
+            else
+            {
+                isDarkMode = false;
+                await JS.InvokeVoidAsync("document.body.classList.add", "light-theme");
+                await JS.InvokeVoidAsync("document.body.classList.remove", "dark-theme");
+            }
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        isDarkMode = !isDarkMode;
+
+        if (isDarkMode)
+        {
+            await JS.InvokeVoidAsync("localStorage.setItem", "app-current-theme", "dark");
+            await JS.InvokeVoidAsync("document.body.classList.add", "dark-theme");
+            await JS.InvokeVoidAsync("document.body.classList.remove", "light-theme");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("localStorage.setItem", "app-current-theme", "light");
+            await JS.InvokeVoidAsync("document.body.classList.add", "light-theme");
+            await JS.InvokeVoidAsync("document.body.classList.remove", "dark-theme");
+        }
+    }
+}

@@ -58,3 +58,30 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+/* Application 07: Theme Toggle Styling Rules */
+body.light-theme {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+body.dark-theme {
+    background-color: #121212 !important;
+    color: #f8f9fa !important;
+}
+
+    body.dark-theme .card {
+        background-color: #1e1e1e !important;
+        color: #f8f9fa !important;
+        border: 1px solid #333 !important;
+    }
+
+    body.dark-theme .list-group-item {
+        background-color: #2a2a2a !important;
+        color: #f8f9fa !important;
+        border-color: #383838 !important;
+    }
+
+    body.dark-theme .bg-light {
+        background-color: #2d2d2d !important;
+        color: #e0e0e0 !important;
+    }
