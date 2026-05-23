@@ -1,37 +1,46 @@
 ﻿@page "/greeting"
-@using System
+@rendermode InteractiveServer
 
-<PageTitle>Application 1: Dynamic Greeting</PageTitle>
+<PageTitle>Application 1: Greeting</PageTitle>
 
-<div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Application 1: Time-Based Greeting</h3>
-        </div>
-        <div class="card-body text-center p-5">
-            <h2 class="text-secondary">@GetGreetingMessage()!</h2>
-            <p class="lead mt-3">The current system time is: <strong>@currentTime.ToLongTimeString()</strong></p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold">Interactive Greeting</h4>
+                </div>
+                <div class="card-body p-4">
 
-            <button class="btn btn-outline-primary mt-3" @onclick="RefreshTime">
-                <span class="bi bi-arrow-clockwise"></span> Refresh Time
-            </button>
+                    <div class="mb-4">
+                        <label for="userNameInput" class="form-label fw-bold text-secondary text-uppercase small">Enter Your Name</label>
+                        <input type="text"
+                               id="userNameInput"
+                               class="form-control form-control-lg border-2 rounded-3"
+                               placeholder="Type name here..."
+                               @bind-value="userName"
+                               @bind-value:event="oninput" />
+                    </div>
+
+                    <div class="border-top my-4"></div>
+
+                    <div class="text-center py-3 bg-light rounded-3 border">
+                        @if (string.IsNullOrWhiteSpace(userName))
+                        {
+                            <h2 class="text-muted fst-italic mb-0">Hello, Guest!</h2>
+                        }
+                        else
+                        {
+                            <h2 class="text-success fw-bold mb-0 text-break">Hello, @userName!</h2>
+                        }
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @code {
-    private DateTime currentTime = DateTime.Now;
-
-    private void RefreshTime()
-    {
-        currentTime = DateTime.Now;
-    }
-
-    private string GetGreetingMessage()
-    {
-        int hour = currentTime.Hour;
-        if (hour < 12) return "Good Morning";
-        if (hour < 18) return "Good Afternoon";
-        return "Good Evening";
-    }
+    private string userName = string.Empty;
 }
