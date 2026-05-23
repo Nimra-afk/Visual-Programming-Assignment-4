@@ -1,0 +1,103 @@
+﻿@page "/application-3"
+@rendermode InteractiveServer
+
+<PageTitle>Application 3: To-Do List</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-info text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold text-dark">To-Do List Manager</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="input-group mb-3">
+                        <input type="text"
+                               class="form-control border-2 rounded-start-3"
+                               placeholder="Enter a new task..."
+                               @bind-value="newTask"
+                               @onkeyup="HandleKeyUp" />
+                        <button class="btn btn-info text-dark fw-bold px-4 rounded-end-3" @onclick="AddTask">
+                            Add Task
+                        </button>
+                    </div>
+
+                    @if (tasks.Count > 0)
+                    {
+                        <div class="d-flex justify-content-end mb-3">
+                            <button class="btn btn-sm btn-outline-danger rounded-3" @onclick="ClearAllTasks">
+                                <i class="bi bi-trash3-fill me-1"></i> Clear All
+                            </button>
+                        </div>
+                    }
+
+                    <div class="border-top my-3"></div>
+
+                    <h5 class="fw-bold text-secondary mb-3 small text-uppercase">Your Tasks</h5>
+
+                    @if (tasks.Count == 0)
+                    {
+                        <div class="text-center py-4 bg-light rounded-3 border border-dashed text-muted">
+                            <p class="mb-0 fst-italic small">No tasks added yet. Add some above!</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush rounded-3 border">
+                            @foreach (var task in tasks)
+                            {
+                                <li class="list-group-item d-flex align-items-center justify-content-between p-3 bg-white">
+                                    <span class="text-dark">@task</span>
+                                    <button class="btn btn-sm btn-link text-danger p-0" @onclick="() => RemoveTask(task)">
+                                        Remove
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                        <div class="mt-2 text-end">
+                            <small class="text-muted fw-semibold">Total Tasks: @tasks.Count</small>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    // Two-way bound variable for the text field
+    private string newTask = string.Empty;
+
+    // Collection holding the list items (rendered via one-way iteration)
+    private List<string> tasks = new();
+
+    private void AddTask()
+    {
+        if (!string.IsNullOrWhiteSpace(newTask))
+        {
+            tasks.Add(newTask.Trim());
+            newTask = string.Empty; // Resets the input field cleanly
+        }
+    }
+
+    // Allows users to press 'Enter' on their keyboard to add a task quickly
+    private void HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            AddTask();
+        }
+    }
+
+    private void RemoveTask(string taskToRemove)
+    {
+        tasks.Remove(taskToRemove);
+    }
+
+    private void ClearAllTasks()
+    {
+        tasks.Clear();
+    }
+}
