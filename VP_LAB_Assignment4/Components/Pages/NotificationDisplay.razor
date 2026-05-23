@@ -1,0 +1,65 @@
+﻿@page "/notification-display"
+@rendermode InteractiveServer
+@inject VP_LAB_Assignment4.Services.NotificationService NotifService
+@inject VP_LAB_Assignment4.Services.NotificationConfig Config
+
+<PageTitle>App 6: Notifications Display</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold">Notifications Inbox</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <span class="badge bg-secondary me-2">Style: @Config.NotificationStyle</span>
+                            <span class="badge bg-secondary">Limit: @Config.DefaultNumberOfNotifications</span>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary rounded-3" @onclick="FetchData">
+                            Refresh Feed
+                        </button>
+                    </div>
+
+                    @if (notificationItems == null)
+                    {
+                        <p class="text-center text-muted fst-italic">Loading notifications stream...</p>
+                    }
+                    else if (notificationItems.Count == 0)
+                    {
+                        <p class="text-center text-muted fst-italic">No notifications available.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-group rounded-3 shadow-sm">
+                            @foreach (var item in notificationItems)
+                            {
+                                <li class="list-group-item p-3 border-start border-primary border-4 mb-2 bg-light rounded shadow-sm">
+                                    <div class="small fw-semibold text-dark">@item</div>
+                                </li>
+                            }
+                        </ul>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<string>? notificationItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchData();
+    }
+
+    private async Task FetchData()
+    {
+        notificationItems = await NotifService.GetNotificationsAsync();
+    }
+}

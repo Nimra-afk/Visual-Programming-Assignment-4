@@ -7,6 +7,8 @@ builder.Services.AddRazorComponents()
 
     .AddInteractiveServerComponents();
 builder.Services.AddSingleton<VP_LAB_Assignment4.Services.AuthenticationStateService>();
+builder.Services.AddSingleton<VP_LAB_Assignment4.Services.NotificationConfig>();
+builder.Services.AddTransient<VP_LAB_Assignment4.Services.NotificationService>();
 
 var app = builder.Build();
 

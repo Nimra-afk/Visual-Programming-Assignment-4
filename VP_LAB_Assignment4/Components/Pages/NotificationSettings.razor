@@ -1,0 +1,37 @@
+﻿@page "/notification-settings"
+@rendermode InteractiveServer
+@inject VP_LAB_Assignment4.Services.NotificationConfig Config
+
+<PageTitle>App 6: Notification Settings</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-dark text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-semibold">Configure Notification Service</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary small">DEFAULT NUMBER OF NOTIFICATIONS</label>
+                        <input type="number" class="form-control border-2" @bind-value="Config.DefaultNumberOfNotifications" min="1" max="10" />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary small">DISPLAY VIEW STYLE</label>
+                        <select class="form-select border-2" @bind="Config.NotificationStyle">
+                            <option value="Detailed">Detailed View (Long logs)</option>
+                            <option value="Compact">Compact View (Short text)</option>
+                        </select>
+                    </div>
+
+                    <div class="alert alert-info border-0 rounded-3 small mb-0">
+                        ℹ️ Values modified here update the global <code>NotificationConfig</code> singleton instance instantly across components.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
