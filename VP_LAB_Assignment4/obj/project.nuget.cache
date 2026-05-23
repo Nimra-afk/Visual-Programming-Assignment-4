@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "HC5Eoydi9OU=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\clicks\\source\\repos\\VP_LAB_Assignment4\\VP_LAB_Assignment4\\VP_LAB_Assignment4.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\clicks\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.8\\microsoft.aspnetcore.app.internal.assets.10.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}
